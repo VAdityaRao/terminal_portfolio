@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>aditya viswanadha</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: #0c0c0c;
+      color: #33ff33;
+      font-family: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 48px 20px 96px;
+    }
+
+    .dim    { color: #1a6b1a; }
+    .bright { color: #66ff66; }
+
+    /* ── Header ──────────────────────────────────────── */
+    .site-header { margin-bottom: 36px; }
+    .site-name   { font-size: 20px; color: #66ff66; letter-spacing: 0.04em; }
+    .site-sub    { color: #1a6b1a; margin-top: 2px; }
+
+    /* ── Nav ─────────────────────────────────────────── */
+    nav {
+      margin-bottom: 48px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 0;
+    }
+    nav a {
+      color: #1a6b1a;
+      text-decoration: none;
+      margin-right: 24px;
+      transition: color 0.1s;
+      white-space: nowrap;
+    }
+    nav a::before       { content: '$ '; }
+    nav a:hover         { color: #33ff33; }
+    nav a.active        { color: #33ff33; }
+    nav a.active::after { content: ' ▸'; }
+    nav a.secret              { font-size: 12px; color: #0f3d0f; margin-right: 0; }
+    nav a.secret + a.secret   { margin-left: 12px; }
+    nav a.secret:hover        { color: #1a6b1a; }
+
+    /* ── Section ─────────────────────────────────────── */
+    section[hidden] { display: none; }
+
+    .s-prompt { color: #00cc00; margin-bottom: 16px; }
+    .s-prompt::before { content: 'aditya@portfolio:~$ '; }
+
+    hr.rule {
+      border: none;
+      border-top: 1px solid #1a3a1a;
+      margin-bottom: 24px;
+    }
+
+    /* ── Back link ───────────────────────────────────── */
+    .back-link {
+      display: inline-block;
+      color: #1a6b1a;
+      font-size: 12px;
+      margin-bottom: 24px;
+      text-decoration: none;
+    }
+    .back-link::before { content: '← '; }
+    .back-link:hover   { color: #33ff33; }
+
+    /* ── Prose ───────────────────────────────────────── */
+    .prose p            { margin-bottom: 14px; max-width: 72ch; }
+    .prose p:last-child { margin-bottom: 0; }
+
+    /* ── Projects list ───────────────────────────────── */
+    .proj-index { color: #1a6b1a; margin-bottom: 20px; line-height: 2.2; }
+    .proj-index a {
+      color: #1a6b1a;
+      text-decoration: none;
+      display: inline-block;
+      min-width: 22ch;
+    }
+    .proj-index a:hover  { color: #33ff33; }
+    .proj-index a.active { color: #33ff33; }
+
+    /* ── Project detail ──────────────────────────────── */
+    .project-name { color: #66ff66; margin-bottom: 4px; }
+    .project-tags { color: #1a6b1a; font-size: 12px; margin-bottom: 12px; }
+    .project-body p { color: #2a9a2a; margin-bottom: 6px; max-width: 72ch; }
+
+    /* ── ETROS ───────────────────────────────────────── */
+    .etros-body              { max-width: 72ch; }
+    .etros-body p            { margin-bottom: 14px; }
+    .etros-body p:last-child { margin-bottom: 0; }
+    .etros-stat              { margin-top: 24px; color: #1a6b1a; }
+    .etros-stat span         { color: #33ff33; }
+
+    /* ── Blog gate ───────────────────────────────────── */
+    .gate-wrap { max-width: 72ch; }
+    .gate-prompt { color: #00cc00; margin-bottom: 8px; }
+    .gate-input-row { display: flex; align-items: center; }
+    .gate-label { color: #1a6b1a; margin-right: 8px; white-space: nowrap; }
+    .gate-pass {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #33ff33;
+      font-family: inherit;
+      font-size: inherit;
+      caret-color: #33ff33;
+      flex: 1;
+    }
+    .gate-denied { color: #1a6b1a; margin-top: 12px; display: none; }
+
+    /* ── Blog ────────────────────────────────────────── */
+    .blog-entry             { margin-bottom: 40px; }
+    .blog-entry-header      { margin-bottom: 10px; }
+    .blog-entry-title       { color: #66ff66; }
+    .blog-entry-date        { color: #1a6b1a; font-size: 12px; margin-top: 2px; }
+    .blog-entry-body        { max-width: 72ch; }
+    .blog-entry-body p      { margin-bottom: 12px; color: #2a9a2a; }
+    .blog-entry-body p:last-child { margin-bottom: 0; }
+
+    /* ── Skills ──────────────────────────────────────── */
+    .skill-row { margin-bottom: 12px; display: flex; }
+    .skill-cat { color: #1a6b1a; min-width: 13ch; flex-shrink: 0; }
+
+    /* ── Hobbies list ────────────────────────────────── */
+    .hobby-index { line-height: 2.4; margin-bottom: 20px; }
+    .hobby-index a {
+      color: #1a6b1a;
+      text-decoration: none;
+      display: inline-block;
+      min-width: 14ch;
+    }
+    .hobby-index a:hover  { color: #33ff33; }
+    .hobby-index a.active { color: #33ff33; }
+
+    /* ── Hobby detail ────────────────────────────────── */
+    .hobby-name { color: #66ff66; margin-bottom: 10px; }
+    .hobby-body { max-width: 72ch; }
+    .hobby-body p { color: #2a9a2a; margin-bottom: 8px; }
+    .hobby-body p:last-child { margin-bottom: 0; }
+
+    /* ── Contact ─────────────────────────────────────── */
+    .contact-row   { margin-bottom: 10px; display: flex; }
+    .contact-label { color: #1a6b1a; min-width: 10ch; }
+
+    /* ── Secret ──────────────────────────────────────── */
+    .secret-entry             { margin-bottom: 28px; }
+    .secret-entry-title       { color: #1a6b1a; margin-bottom: 6px; }
+    .secret-body              { max-width: 72ch; color: #1a6b1a; }
+    .secret-body p            { margin-bottom: 8px; }
+    .secret-body p:last-child { margin-bottom: 0; }
+
+    a { color: #33ff33; text-decoration: none; }
+    a:hover { color: #66ff66; text-decoration: underline; }
+    ::selection { background: #33ff3333; }
+
+    @media (max-width: 600px) {
+      html { font-size: 12px; }
+      .wrap { padding: 28px 14px 64px; }
+      nav a { margin-right: 16px; }
+      .skill-cat { min-width: 10ch; }
+      .proj-index a { min-width: 16ch; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="site-header">
+    <div class="site-name">ADITYA VISWANADHA</div>
+    <div class="site-sub">computer engineer &nbsp;·&nbsp; texas a&amp;m ms ce &nbsp;·&nbsp; c++, firmware, embedded</div>
+  </header>
+
+  <nav>
+    <a href="#about"    data-goto="about">whoami</a>
+    <a href="#projects" data-goto="projects">ls projects/</a>
+    <a href="#etros"    data-goto="etros">etros/</a>
+    <a href="#skills"   data-goto="skills">ls skills/</a>
+    <a href="#hobbies"  data-goto="hobbies">hobbies/</a>
+    <a href="#contact"  data-goto="contact">cat contact.txt</a>
+    <a href="#secret"   data-goto="secret" class="secret">.secret/</a>
+    <a href="#blog"     data-goto="blog"   class="secret">blog/</a>
+  </nav>
+
+  <!-- ── ABOUT ──────────────────────────────────────── -->
+  <section id="about" hidden>
+    <div class="s-prompt">whoami</div>
+    <hr class="rule">
+    <div class="prose">
+      <p>
+        Aditya Viswanadha. MS Computer Engineering, Texas A&amp;M (2024&ndash;2026).
+        B.Tech Electronics &amp; Computer Engineering, SRM Institute of Science and Technology.
+      </p>
+      <p>
+        I write C++. My background spans digital design, VLSI, and embedded systems,
+        and I find myself drawn toward work that stays close to the hardware —
+        firmware, device drivers, the parts of a system where the abstraction is
+        thin and the machine is visible.
+      </p>
+      <p>
+        I interned at Amazon Web Services on ML infrastructure and spent time
+        researching AI inference systems at TAMU. The experience I consider most
+        formative was two years as Electronics &amp; Coding Head at ETROS Solareon
+        Racing, building the firmware stack for a solar racing car.
+        
+      </p>
+      <p>
+        I am looking for roles in embedded software, firmware, and DFT R&amp;D.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── PROJECTS ───────────────────────────────────── -->
+  <section id="projects" hidden>
+
+    <div class="s-prompt">ls projects/</div>
+    <hr class="rule">
+    <div class="proj-index">
+      <a href="#projects/kernel"          data-goto="projects/kernel">kernel</a><a href="#projects/branch-predictor" data-goto="projects/branch-predictor">branch-predictor</a><a href="#projects/mochac" data-goto="projects/mochac">mochac</a><br>
+      <a href="#projects/srrip-cache"     data-goto="projects/srrip-cache">srrip-cache</a><a href="#projects/vlsi-pd" data-goto="projects/vlsi-pd">vlsi-pd</a><a href="#projects/hldpc" data-goto="projects/hldpc">hldpc</a><br>
+      <a href="#projects/cam-cell"        data-goto="projects/cam-cell">cam-cell</a><a href="#projects/adder" data-goto="projects/adder">adder</a>
+    </div>
+
+    <!-- Detail: kernel -->
+    <div class="proj-detail" data-proj="kernel" hidden>
+      <div class="project-name">C++ Operating System Kernel</div>
+      <div class="project-tags">C++&nbsp;&nbsp;x86 Assembly&nbsp;&nbsp;QEMU&nbsp;&nbsp;GDB</div>
+      <div class="project-body">
+        <p>Multi-threaded x86 OS built from scratch. No standard libraries.</p>
+        <p>Virtual memory manager: demand-paging, frame allocator, page tables.</p>
+        <p>Preemptive kernel-level scheduler with full context-switching.</p>
+      </div>
+    </div>
+
+    <!-- Detail: branch-predictor -->
+    <div class="proj-detail" data-proj="branch-predictor" hidden>
+      <div class="project-name">Hybrid Branch Predictor: TAGE-P-L</div>
+      <div class="project-tags">C++&nbsp;&nbsp;Computer Architecture&nbsp;&nbsp;ChampSim</div>
+      <div class="project-body">
+        <p>Novel hybrid predictor built for a championship competition.</p>
+        <p>TAGE-SC-L core + 4096-entry perceptron + dedicated loop predictor.</p>
+        <p>Evaluated on 105 industry traces. Improved MPKI on select workloads.</p>
+      </div>
+    </div>
+
+    <!-- Detail: mochac -->
+    <div class="proj-detail" data-proj="mochac" hidden>
+      <div class="project-name">Optimizing Compiler for MochaLang</div>
+      <div class="project-tags">C++&nbsp;&nbsp;Java&nbsp;&nbsp;Compilers&nbsp;&nbsp;DLX Architecture</div>
+      <div class="project-body">
+        <p>Multi-stage compiler: lexer, recursive-descent parser, type-checker, AST.</p>
+        <p>Backend converts to SSA-based IR, runs optimization passes, generates DLX code.</p>
+      </div>
+    </div>
+
+    <!-- Detail: srrip-cache -->
+    <div class="proj-detail" data-proj="srrip-cache" hidden>
+      <div class="project-name">High-Performance L3 Cache Replacement (SRRIP)</div>
+      <div class="project-tags">C++&nbsp;&nbsp;ZSim&nbsp;&nbsp;Cache Architecture</div>
+      <div class="project-body">
+        <p>2-bit SRRIP cache replacement policy for L3 cache.</p>
+        <p>Benchmarked against LRU and LFU on SPEC2006 + PARSEC across single-core and multi-core.</p>
+      </div>
+    </div>
+
+    <!-- Detail: vlsi-pd -->
+    <div class="proj-detail" data-proj="vlsi-pd" hidden>
+      <div class="project-name">VLSI Physical Design Automation Suite</div>
+      <div class="project-tags">C++&nbsp;&nbsp;Floorplanning&nbsp;&nbsp;Partitioning</div>
+      <div class="project-body">
+        <p>Kernighan-Lin partitioning (2-way and 3-way) on graphs up to 300 edges.</p>
+        <p>Stockmeyer floorplanning via Polish expression parsing and bottom-up tree traversal.</p>
+      </div>
+    </div>
+
+    <!-- Detail: hldpc -->
+    <div class="proj-detail" data-proj="hldpc" hidden>
+      <div class="project-name">HLDPC Error-Correction Controller (RTL to Layout)</div>
+      <div class="project-tags">Verilog&nbsp;&nbsp;LDPC&nbsp;&nbsp;Cadence Virtuoso&nbsp;&nbsp;Logic Synthesis</div>
+      <div class="project-body">
+        <p>Custom layouts for VNU, CNU, and Mux cells of an LDPC controller.</p>
+        <p>DRC and LVS clean. 100% pass rate on simulation vectors.</p>
+      </div>
+    </div>
+
+    <!-- Detail: cam-cell -->
+    <div class="proj-detail" data-proj="cam-cell" hidden>
+      <div class="project-name">64-bit CAM Cell using 14nm FlashFETs</div>
+      <div class="project-tags">HSPICE&nbsp;&nbsp;CAM&nbsp;&nbsp;FinFET&nbsp;&nbsp;CMOS&nbsp;&nbsp;SRAM</div>
+      <div class="project-body">
+        <p>64-bit CAM array with 14nm FlashFET models in a 45nm CMOS environment.</p>
+        <p>Optimized keeper and pre-charge logic. 288ps read latency.</p>
+      </div>
+    </div>
+
+    <!-- Detail: adder -->
+    <div class="proj-detail" data-proj="adder" hidden>
+      <div class="project-name">8-bit Pipelined Adder with Buffered H-Clock Tree</div>
+      <div class="project-tags">Cadence Virtuoso&nbsp;&nbsp;Cadence Spectre&nbsp;&nbsp;IC Layout&nbsp;&nbsp;TSMC02</div>
+      <div class="project-body">
+        <p>Schematics and layouts for inverter, NAND, XOR, D-FF using TSMC02.</p>
+        <p>H-Clock tree for synchronous distribution and minimized clock skew.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── ETROS ──────────────────────────────────────── -->
+  <section id="etros" hidden>
+    <div class="s-prompt">cat etros/README</div>
+    <hr class="rule">
+
+    <div class="etros-body">
+      <p>
+        ETROS Solareon Racing is a student solar racing team based out of Chennai.
+        I joined as a first-year and eventually became Electronics &amp; Coding Head —
+        which is a title that sounds cleaner than it was. In practice it meant being
+        the person responsible for making the car not fail because of software.
+      </p>
+      <p>
+        The work was real-time embedded firmware in C and C++. The car had sensors
+        everywhere — motor controllers, battery management systems, solar panels —
+        and they all needed to talk to each other over UART and I2C. I built the
+        telemetry pipeline that collected and transmitted live vehicle data during a run.
+        When something broke during testing, it was usually my fault, which is a fast
+        way to learn debugging.
+      </p>
+      <p>
+        We competed at ESVC-3000 (Electric Solar Vehicle Championship) at a world
+        renowned university (more in secrets).
+        Need to write about achievements here.
+      </p>
+      <p>
+        I also applied some ML to optimize behavioral cloning inference loops on
+        low-power embedded hardware. That is the part that sounds impressive on paper.
+        The part that actually taught me the most was the telemetry system, the debugging
+        sessions, and two years of not knowing if the car would make it through a test run.
+      </p>
+    </div>
+
+    <div class="etros-stat">
+      <div>role &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Electronics &amp; Coding Head</span></div>
+      <div>period &nbsp;&nbsp;&nbsp; <span>Mar 2022 &ndash; Jun 2024</span></div>
+      <div>stack &nbsp;&nbsp;&nbsp;&nbsp; <span>C  C++  UART  I2C  embedded Linux  RTOS</span></div>
+      <div>competed &nbsp; <span>ESVC-3000</span></div>
+    </div>
+  </section>
+
+  <!-- ── BLOG ───────────────────────────────────────── -->
+  <section id="blog" hidden>
+
+    <!-- Gate -->
+    <div id="blog-gate" class="gate-wrap">
+      <div class="s-prompt">blog/</div>
+      <hr class="rule">
+      <div class="gate-prompt">enter passphrase</div>
+      <div class="gate-input-row">
+        <span class="gate-label">passphrase:</span>
+        <input id="blog-pass" class="gate-pass" type="password" autocomplete="off" spellcheck="false" />
+      </div>
+      <div id="blog-denied" class="gate-denied">permission denied (13)</div>
+    </div>
+
+    <!-- Content -->
+    <div id="blog-content" hidden>
+      <div class="s-prompt">ls blog/</div>
+      <hr class="rule">
+
+      <div class="blog-entry">
+        <div class="blog-entry-header">
+          <div class="blog-entry-title">software and mathematics</div>
+          <div class="blog-entry-date">2026-06-01</div>
+        </div>
+        <div class="blog-entry-body">
+          <p>
+            An algorithms course here changed something in how I think about programming.
+            The professor made us do math and love math or so I thought, but then he asked us to do
+            something I was afraid of since my 6th grade, to think about math. Think about how would
+            something go and to calculate the entire thought process. I just like listening to what
+            works and reciprocating it, in exams. Thinking is reserved for stuff. Somewhere I missed
+            out but I did train myself to identify problems and their algorithmic needs decently.
+            An algorithm is a formal object. A program is an argument.
+            I was not prepared for how much I would enjoy that framing.
+          </p>
+          <p>
+            Mathematics, as I understood it growing up, was useful. You learned it because
+            it let you do things. The professor was not interested in that. He was interested
+            in mathematics because it exists — because its truths are true independent of
+            whether anyone ever uses them for anything. That is a different relationship
+            with the subject entirely.
+          </p>
+          <p>
+            I get anxious when I think of maths like this. This has made mathematics difficult
+            in a specific way — not because I cannot understand it, but because I am sometimes
+            afraid to try. The fear of being wrong about something that is provably correct is
+            its own particular problem. But when a concept does land, it tends to stay.
+            The understanding is durable in a way that rote learning never was.
+          </p>
+          <p>
+            The implication I keep returning to: a bug is not a mistake. It is a theorem
+            that turned out to be false. The program did exactly what the mathematics said it
+            would. The mathematics was wrong. This is clarifying. It tells you where to look.
+          </p>
+          <p>
+            A computer is a machine that executes mathematics — imperfectly in practice,
+            which is why you need so many engineers, so many layers, so much verification.
+            I find this clarifying too. Every failure is a place where the mathematics
+            did not hold. The machine is not broken. The proof is.
+          </p>
+        </div>
+      </div>
+
+      <div class="blog-entry">
+        <div class="blog-entry-header">
+          <div class="blog-entry-title">on the divide</div>
+          <div class="blog-entry-date">2026-06-01</div>
+        </div>
+        <div class="blog-entry-body">
+          <p>
+            There is a divide in this field between hardware people and software people.
+            I do not particularly like it. I think it causes both sides to underestimate
+            the other, and occasionally to underestimate themselves.
+          </p>
+          <p>
+            But I understand why it exists. The domains are genuinely different. The skill
+            sets diverge early. There is enough to learn in either direction to occupy a
+            career, and no obvious reason to cross over once you have picked a lane.
+            It is nobody's fault. It is, by the nature of the thing, what it is.
+          </p>
+          <p>
+            What I find interesting is the assumption on both sides that the other side is
+            not doing real work. Hardware people sometimes think software is just telling
+            the machine what to do. Software people sometimes think hardware is just moving
+            electrons around. Both are wrong in ways that are almost too obvious to state.
+          </p>
+          <p>
+            I came up through electronics. I write firmware and kernels now.
+            I do not think of this as having crossed the divide. I think of it as
+            having learned that the divide is less interesting than the machine underneath it.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── SKILLS ─────────────────────────────────────── -->
+  <section id="skills" hidden>
+    <div class="s-prompt">ls skills/</div>
+    <hr class="rule">
+
+    <div class="skill-row">
+      <span class="skill-cat dim">Languages</span>
+      <span class="skill-vals">C++&nbsp;&nbsp;C&nbsp;&nbsp;Assembly (RISC-V, x86)&nbsp;&nbsp;Verilog&nbsp;&nbsp;Python&nbsp;&nbsp;Bash</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-cat dim">Systems</span>
+      <span class="skill-vals">Kernel Dev&nbsp;&nbsp;Virtual Memory&nbsp;&nbsp;Scheduling&nbsp;&nbsp;Threading&nbsp;&nbsp;Device Drivers&nbsp;&nbsp;Firmware&nbsp;&nbsp;RTOS</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-cat dim">Arch Tools</span>
+      <span class="skill-vals">QEMU&nbsp;&nbsp;GDB&nbsp;&nbsp;ChampSim&nbsp;&nbsp;GEM5&nbsp;&nbsp;ZSim&nbsp;&nbsp;Makefiles&nbsp;&nbsp;Linux</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-cat dim">VLSI</span>
+      <span class="skill-vals">Cadence Virtuoso &amp; Spectre&nbsp;&nbsp;HSPICE&nbsp;&nbsp;STA&nbsp;&nbsp;DRC/LVS&nbsp;&nbsp;FinFET&nbsp;&nbsp;SRAM/CAM</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-cat dim">Protocols</span>
+      <span class="skill-vals">UART&nbsp;&nbsp;I2C&nbsp;&nbsp;SPI&nbsp;&nbsp;CAN</span>
+    </div>
+  </section>
+
+  <!-- ── HOBBIES ─────────────────────────────────────── -->
+  <section id="hobbies" hidden>
+
+    <div class="s-prompt">ls hobbies/</div>
+    <hr class="rule">
+    <div class="hobby-index">
+      <a href="#hobbies/guitar"   data-goto="hobbies/guitar">guitar</a><a href="#hobbies/tennis"  data-goto="hobbies/tennis">tennis</a><a href="#hobbies/cricket" data-goto="hobbies/cricket">cricket</a><br>
+      <a href="#hobbies/chess"    data-goto="hobbies/chess">chess</a><a href="#hobbies/movies"  data-goto="hobbies/movies">movies</a><a href="#hobbies/reading" data-goto="hobbies/reading">reading</a>
+    </div>
+
+    <!-- Detail: guitar -->
+    <div class="hobby-detail" data-hobby="guitar" hidden>
+      <div class="hobby-name">guitar</div>
+      <div class="hobby-body">
+        <p>I love striking chords, and love realizing some songs are the same as others
+        but in a different scale, categorize them on the basis of their feel.
+        I have some achievements down that my mom would have wanted to be seen by everyone.</p>
+        <p>Trinity College London — Grade 2 (Plectrum Guitar) with Distinction. Grade 3 (Plectrum Guitar), Pass.
+        Not the trajectory I had in mind.</p>
+      </div>
+    </div>
+
+    <!-- Detail: tennis -->
+    <div class="hobby-detail" data-hobby="tennis" hidden>
+      <div class="hobby-name">tennis</div>
+      <div class="hobby-body">
+        <p>I regularly went to practice sessions held by the Aggie Tennis Club and was not half bad there!
+        Those peeps are pretty cool. I started playing when I was in 6th and lost both my matches in cluster level once.</p>
+      </div>
+    </div>
+
+    <!-- Detail: cricket -->
+    <div class="hobby-detail" data-hobby="cricket" hidden>
+      <div class="hobby-name">cricket</div>
+      <div class="hobby-body">
+        <p>Love the sport. Played throughout. Joined Aggie Cricket Club at Texas A&amp;M
+        and had a brief career (funny/embarrassing incident in .secret/..) as a bowler.</p>
+        <p>Currently on hiatus. Will return.</p>
+      </div>
+    </div>
+
+    <!-- Detail: chess -->
+    <div class="hobby-detail" data-hobby="chess" hidden>
+      <div class="hobby-name">chess</div>
+      <div class="hobby-body">
+        <p>1200 rapid on chess.com. The goal is 1800. 2000 would be something else.
+        Chess is hard but why? Will understanding chess unlock
+        some secret math potential in me or vice versa? Or does it just rot the brain. tbd..</p>
+        <p>My username is caro_cann_london based on the openings I like to play.</p>
+      </div>
+    </div>
+
+    <!-- Detail: movies -->
+    <div class="hobby-detail" data-hobby="movies" hidden>
+      <div class="hobby-name">movies</div>
+      <div class="hobby-body">
+        <p>My friends are cinephiles. I am adjacent to that — close enough to have opinions,
+        not quite committed enough to maintain that Letterboxd. Secondary cinephile is accurate.</p>
+
+        </p> What I can definitely say is that Interstellar is most definitely not my favorite movie
+        (It kinda sucks but its nice). Its not even the best Nolan film (Memento duh!).</p>
+      </div>
+    </div>
+
+    <!-- Detail: reading -->
+    <div class="hobby-detail" data-hobby="reading" hidden>
+      <div class="hobby-name">reading</div>
+      <div class="hobby-body">
+        <p>I want to read more. It is one of those things I know I should do more of
+        and occasionally actually do.</p>
+        <p>Currently working through the Witcher series. Completed The Last Wish and
+        Sword of Destiny. The books are not what the show made me expect.
+        They are better.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── CONTACT ─────────────────────────────────────── -->
+  <section id="contact" hidden>
+    <div class="s-prompt">cat contact.txt</div>
+    <hr class="rule">
+
+    <div class="contact-row">
+      <span class="contact-label dim">email</span>
+      <a href="mailto:viswaditya06@gmail.com">viswaditya06@gmail.com</a>
+    </div>
+    <div class="contact-row">
+      <span class="contact-label dim">linkedin</span>
+      <a href="https://linkedin.com/in/vaditya0611" target="_blank" rel="noopener">linkedin.com/in/vaditya0611</a>
+    </div>
+    <div class="contact-row">
+      <span class="contact-label dim">github</span>
+      <a href="https://github.com/VAdityaRao" target="_blank" rel="noopener">github.com/VAdityaRao</a>
+    </div>
+    <div class="contact-row">
+      <span class="contact-label dim">phone</span>
+      <span>(979)-344-1333</span>
+    </div>
+  </section>
+
+  <!-- ── SECRET ─────────────────────────────────────── -->
+  <section id="secret" hidden>
+
+    <div id="secret-gate" class="gate-wrap">
+      <div class="s-prompt">.secret/</div>
+      <hr class="rule">
+      <div class="gate-prompt">enter passphrase</div>
+      <div class="gate-input-row">
+        <span class="gate-label">passphrase:</span>
+        <input id="secret-pass" class="gate-pass" type="password" autocomplete="off" spellcheck="false" />
+      </div>
+      <div id="secret-denied" class="gate-denied">permission denied (13)</div>
+    </div>
+
+    <div id="secret-content" hidden>
+      <div class="s-prompt">ls -a .secret/</div>
+      <hr class="rule">
+
+      <div class="secret-entry">
+        <div class="secret-entry-title"># the over</div>
+        <div class="secret-body">
+          <p>Aggie Cricket Club. Practice match. I was bowling.
+          In a single over I conceded approximately 30 runs.
+          To clarify: an over is 6 balls. 30 runs is 5 runs per ball.
+          The batting side was not trying hard.</p>
+          <p>I have formally retired from bowling. The retirement stands.
+          I will return to cricket. I will not return to bowling.</p>
+        </div>
+      </div>
+
+      <div class="secret-entry">
+        <div class="secret-entry-title"># chess</div>
+        <div class="secret-body">
+          <p>1200. I know. I am working on it.
+          The gap between 1200 and 1800 is mostly tactics, or so I am told.
+          The gap between 1800 and 2000 is where I stop pretending
+          I understand the game and start actually understanding it.</p>
+        </div>
+      </div>
+
+      <div class="secret-entry">
+        <div class="secret-entry-title"># dijkstra</div>
+        <div class="secret-body">
+          <p>Daniel Jim&eacute;nez &rarr; Edsger Dijkstra &rarr; me.
+          Two degrees of separation. I did not choose this field for this reason.
+          But I will not pretend it does not make me happy.</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<script>
+  const sections    = document.querySelectorAll('section[id]');
+  const navLinks    = document.querySelectorAll('nav a[data-goto]');
+  let secretUnlocked = false;
+  let blogUnlocked   = false;
+
+  function show(path) {
+    const slash     = path.indexOf('/');
+    const sectionId = slash === -1 ? path : path.slice(0, slash);
+    const sub       = slash === -1 ? null  : path.slice(slash + 1);
+
+    // Validate section
+    const valid = [...sections].some(s => s.id === sectionId);
+    const target = valid ? sectionId : 'about';
+
+    sections.forEach(s => s.hidden = s.id !== target);
+    navLinks.forEach(a => a.classList.toggle('active', a.dataset.goto === target));
+
+    // ── Projects sub-routing ───────────────────────────
+    if (target === 'projects') {
+      const activeSub = sub || 'kernel';
+      document.querySelectorAll('.proj-index a').forEach(a => {
+        a.classList.toggle('active', a.dataset.goto === 'projects/' + activeSub);
+      });
+      document.querySelectorAll('.proj-detail').forEach(d => {
+        d.hidden = d.dataset.proj !== activeSub;
+      });
+    }
+
+    // ── Hobbies sub-routing ────────────────────────────
+    if (target === 'hobbies') {
+      const activeSub = sub || 'guitar';
+      document.querySelectorAll('.hobby-index a').forEach(a => {
+        a.classList.toggle('active', a.dataset.goto === 'hobbies/' + activeSub);
+      });
+      document.querySelectorAll('.hobby-detail').forEach(d => {
+        d.hidden = d.dataset.hobby !== activeSub;
+      });
+    }
+
+    // ── Secret gate ────────────────────────────────────
+    if (target === 'secret') {
+      const gate    = document.getElementById('secret-gate');
+      const content = document.getElementById('secret-content');
+      if (secretUnlocked) {
+        gate.style.display = 'none';
+        content.hidden = false;
+      } else {
+        gate.style.display = '';
+        content.hidden = true;
+        setTimeout(() => document.getElementById('secret-pass').focus(), 50);
+      }
+    }
+
+    // ── Blog gate ──────────────────────────────────────
+    if (target === 'blog') {
+      const gate    = document.getElementById('blog-gate');
+      const content = document.getElementById('blog-content');
+      if (blogUnlocked) {
+        gate.style.display = 'none';
+        content.hidden = false;
+      } else {
+        gate.style.display = '';
+        content.hidden = true;
+        setTimeout(() => document.getElementById('blog-pass').focus(), 50);
+      }
+    }
+  }
+
+  // ── Universal link handler ─────────────────────────
+  document.addEventListener('click', e => {
+    const a = e.target.closest('[data-goto]');
+    if (!a) return;
+    e.preventDefault();
+    const path = a.dataset.goto;
+    history.pushState(null, '', '#' + path);
+    show(path);
+  });
+
+  window.addEventListener('popstate', () => {
+    show(location.hash.slice(1) || 'about');
+  });
+
+  // ── Password gates ─────────────────────────────────
+  function setupGate(inputId, deniedId, password, onSuccess) {
+    document.getElementById(inputId).addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      const val = e.target.value;
+      e.target.value = '';
+      if (val === password) {
+        onSuccess();
+      } else {
+        const el = document.getElementById(deniedId);
+        el.style.display = '';
+        setTimeout(() => el.style.display = 'none', 2000);
+      }
+    });
+  }
+
+  setupGate('secret-pass', 'secret-denied', '30runs', () => {
+    secretUnlocked = true;
+    document.getElementById('secret-gate').style.display = 'none';
+    document.getElementById('secret-content').hidden = false;
+  });
+
+  setupGate('blog-pass', 'blog-denied', 'theorem', () => {
+    blogUnlocked = true;
+    document.getElementById('blog-gate').style.display = 'none';
+    document.getElementById('blog-content').hidden = false;
+  });
+
+  show(location.hash.slice(1) || 'about');
+</script>
+</body>
+</html>
